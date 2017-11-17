@@ -1,5 +1,8 @@
+import pipes.RequirementsInfo;
+
 class Main{
     public static void main(String args[]){
-            System.out.println("Hello");
+        TerminalInput in = new TerminalInput();
+        in.getRequirementsInfo().printRequirementsInfo();
     }   
 }

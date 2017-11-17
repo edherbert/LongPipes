@@ -1,0 +1,39 @@
+--Plan--
+
+--Pipe info--
+We'll need some sort of object that contains inforamtion about the user's requirements.
+This way the programme will be able to go info.colour1 which could return a boolean. I think this will be much simpler when compared to just passing the values in to a function each time.
+This class could be called RequirementsInfo.
+
+
+--Pipes--
+-All of the pipes will need to be inputted themselves, so one class for each type.
+-The pipes will need to be able to determine if they can supply the requirements, so a function where you pass in the RequirementsInfo. This will just return a boolean.
+
+--Order--
+The order class will be used to calculate each order.
+The session class will be used to keep track of the orders.
+
+Each order will contain an instance of RequirementsInfo to outline the pipe. 
+They ask for the input, and then check that type of pipe can be created. 
+
+--Session--
+This class is in-charge of keeping track of the orders and their total.
+It will list the orders down the right hand side of the user interface
+
+--Requirements Info--
+This class will contain the information about the pipe specification.
+It'll have getters and setters that can be quickly and cleanly queried to collect pipe information.
+This will reduce the ammount in which the user would have to 
+
+--Terminal Input--
+This class will be used to get the pipe information from the termainal.
+You can used it to get a RquirementsInfo class.
+
+
+--Process--
+Main method
+-The user interface is started up
+-An ordering session is begun (Beginning an ordering session will create an instance of order).
+-From the user interface the user can add more orders to the session.
+-When the user is done the session will end and another can be created.
