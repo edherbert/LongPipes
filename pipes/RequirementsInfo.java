@@ -44,6 +44,20 @@ public class RequirementsInfo {
     }
     
     /**
+     * A copy constructor which copies the contents of the passed instance.
+     * @param requirements The instance to copy.
+     */
+    public RequirementsInfo(RequirementsInfo requirements){
+        this.length = requirements.length;
+        this.outerDiameter = requirements.outerDiameter;
+        this.plasticGrade = requirements.plasticGrade;
+        this.colourPrint = requirements.colourPrint;
+        this.innerInsulation = requirements.innerInsulation;
+        this.outerReinforcement = requirements.outerReinforcement;
+        this.chemicalResistance = requirements.chemicalResistance;
+    }
+    
+    /**
      * Print the requirements info to the console in a list.
      */
     public void printRequirementsInfo(){

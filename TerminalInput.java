@@ -16,7 +16,7 @@ public class TerminalInput {
         RequirementsInfo info = new RequirementsInfo();
         Scanner s = new Scanner(System.in);
         
-        System.out.println("Please enter information about your pipe.");
+        System.out.println("Please enter the information about your pipe.");
         
         System.out.println("Length: ");
         info.setLength(s.nextDouble());
