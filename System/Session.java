@@ -11,7 +11,7 @@ public class Session {
     private ArrayList<Order> orders = new ArrayList();
     
     /**
-     *
+     * Construct an ordering session.
      */
     public Session(){
         
