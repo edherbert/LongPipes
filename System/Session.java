@@ -36,4 +36,13 @@ public class Session {
     public Order getOrder(int index){
         return orders.get(index);
     }
+    
+    public double getSessionTotal(){
+        double total = 0d;
+        for(Order o : orders){
+            total += o.getCost();
+        }
+        
+        return total;
+    }
 }
