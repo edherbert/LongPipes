@@ -1,7 +1,5 @@
 package System;
 
-// fewaiofwe
-
 import java.util.ArrayList;
 
 /**
