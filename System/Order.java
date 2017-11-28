@@ -53,6 +53,7 @@ public class Order {
             calculateCost(p, requirements);
         }else{
             System.out.println("A suitable pipe can't be found.");
+            cost = 0d;
         }
     }
     

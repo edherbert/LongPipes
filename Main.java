@@ -1,4 +1,5 @@
 import System.Order;
+import System.PipeGUI;
 import System.Session;
 import pipes.RequirementsInfo;
 
@@ -26,5 +27,9 @@ class Main{
         
         //Work out the total cost for the session.
         System.out.println("Total cost for session: " + s.getSessionTotal());
+        
+        PipeGUI gui = new PipeGUI();
+        gui.setVisible(true);
+        gui.setLocationRelativeTo(null);
     }   
 }
