@@ -78,7 +78,7 @@
                       <Component id="CloseButton" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="16" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -219,7 +219,7 @@
                               <Component id="QuantityCombo" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="13" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -227,7 +227,7 @@
                                   <Component id="InsulationCheck" min="-2" max="-2" attributes="0"/>
                                   <Component id="ChemicalResistanceCheck" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="24" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
@@ -344,11 +344,20 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="LengthText">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="LengthText" noResource="true"/>
+              </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="LengthTextActionPerformed"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="textKeyReleased"/>
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="DiameterText">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="DiameterText" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="textKeyReleased"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JComboBox" name="PlasticGradeCombo">
               <Properties>
@@ -361,9 +370,10 @@
                     <StringItem index="4" value="5"/>
                   </StringArray>
                 </Property>
+                <Property name="name" type="java.lang.String" value="GradeCombo" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PlasticGradeComboActionPerformed"/>
+                <EventHandler event="popupMenuWillBecomeInvisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="popupWillBecomeInvisible"/>
               </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
@@ -378,7 +388,11 @@
                     <StringItem index="2" value="2 colours"/>
                   </StringArray>
                 </Property>
+                <Property name="name" type="java.lang.String" value="ColourCombo" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="popupMenuWillBecomeInvisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="popupWillBecomeInvisible"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -386,17 +400,19 @@
             <Component class="javax.swing.JCheckBox" name="InsulationCheck">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Insulation"/>
+                <Property name="name" type="java.lang.String" value="InsulationCheck" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="InsulationCheckActionPerformed"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="checkPropertyChange"/>
               </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="ChemicalResistanceCheck">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Chemical Resistance"/>
+                <Property name="name" type="java.lang.String" value="ChemicalCheck" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ChemicalResistanceCheckActionPerformed"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="checkPropertyChange"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel6">
@@ -420,7 +436,11 @@
                     <StringItem index="9" value="10"/>
                   </StringArray>
                 </Property>
+                <Property name="name" type="java.lang.String" value="QuantityCombo" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="popupMenuWillBecomeInvisible" listener="javax.swing.event.PopupMenuListener" parameters="javax.swing.event.PopupMenuEvent" handler="popupWillBecomeInvisible"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -428,7 +448,11 @@
             <Component class="javax.swing.JCheckBox" name="ReinforcementCheck">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Outer Reinforcement"/>
+                <Property name="name" type="java.lang.String" value="ReinforcementCheck" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="checkPropertyChange"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel8">
             </Component>
@@ -555,6 +579,9 @@
               <StringArray count="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="listSelectionChanged"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>

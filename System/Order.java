@@ -28,6 +28,8 @@ public class Order {
     
     private double cost = 0d;
     
+    private int quantity = 1;
+    
     //Stores the cost of the plastic (£).
     private static final double plasticCost[] = {0.4, 0.6, 0.75, 0.8, 0.95};
     
@@ -136,5 +138,15 @@ public class Order {
     
     public RequirementsInfo getRequirements(){
         return requirements;
+    }
+    
+    public int getQuantity(){
+        return quantity;
+    }
+    
+    public void setQuantity(int quantity){
+        if(quantity < 1) this.quantity = 1;
+        else if(quantity > 10) this.quantity = 10;
+        else this.quantity = quantity;
     }
 }

@@ -5,7 +5,15 @@
  */
 package System;
 import java.awt.event.WindowEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import pipes.Pipe;
 import pipes.Pipe1;
 import pipes.RequirementsInfo;
@@ -21,17 +29,23 @@ public class PipeGUI extends javax.swing.JFrame {
     /**
      * Creates new form PipeGUI
      */
-    public PipeGUI(Session session) {
+    public PipeGUI(Session session){
         this.session = session;
+        
         initComponents();
      
         OrderList.setModel(model);
+        OrderList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
         updateForm();
     }
     
     public void updateForm(){
         Order current = session.getCurrentOrder();
+        
+        //If there are more than 0 orders then enable the form.
+        setFormEnabled(session.getNumberOfOrders() > 0);
+        
         if(current == null) return;
         
         LengthText.setText(current.getRequirements().getLength() + "");
@@ -44,6 +58,8 @@ public class PipeGUI extends javax.swing.JFrame {
         //-1 because the combo box lists from 0 (first), and 1 is first, so should be index 0.
         PlasticGradeCombo.setSelectedIndex((int)current.getRequirements().getPlasticGrade() - 1);
         ColourCombo.setSelectedIndex((int)current.getRequirements().getColourPrint());
+        
+        QuantityCombo.setSelectedIndex(current.getQuantity() - 1);
     }
     
     public void updateList(){
@@ -52,6 +68,20 @@ public class PipeGUI extends javax.swing.JFrame {
         for(int i = 0; i < session.getNumberOfOrders(); i++){
             model.addElement("Order " + (i + 1));
         }
+    }
+    
+    public void setFormEnabled(boolean enabled){
+        LengthText.setEnabled(enabled);
+        DiameterText.setEnabled(enabled);
+        
+        InsulationCheck.setEnabled(enabled);
+        ChemicalResistanceCheck.setEnabled(enabled);
+        ReinforcementCheck.setEnabled(enabled);
+        
+        PlasticGradeCombo.setEnabled(enabled);
+        ColourCombo.setEnabled(enabled);
+        
+        QuantityCombo.setEnabled(enabled);
     }
 
     /**
@@ -120,40 +150,81 @@ public class PipeGUI extends javax.swing.JFrame {
 
         jLabel5.setText("Colour :");
 
-        LengthText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LengthTextActionPerformed(evt);
+        LengthText.setName("LengthText"); // NOI18N
+        LengthText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textKeyReleased(evt);
+            }
+        });
+
+        DiameterText.setName("DiameterText"); // NOI18N
+        DiameterText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textKeyReleased(evt);
             }
         });
 
         PlasticGradeCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5" }));
-        PlasticGradeCombo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PlasticGradeComboActionPerformed(evt);
+        PlasticGradeCombo.setName("GradeCombo"); // NOI18N
+        PlasticGradeCombo.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                popupWillBecomeInvisible(evt);
+            }
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
             }
         });
 
         ColourCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None", "1 colour", "2 colours" }));
+        ColourCombo.setName("ColourCombo"); // NOI18N
+        ColourCombo.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                popupWillBecomeInvisible(evt);
+            }
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
 
         InsulationCheck.setText("Insulation");
-        InsulationCheck.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                InsulationCheckActionPerformed(evt);
+        InsulationCheck.setName("InsulationCheck"); // NOI18N
+        InsulationCheck.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                checkPropertyChange(evt);
             }
         });
 
         ChemicalResistanceCheck.setText("Chemical Resistance");
-        ChemicalResistanceCheck.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ChemicalResistanceCheckActionPerformed(evt);
+        ChemicalResistanceCheck.setName("ChemicalCheck"); // NOI18N
+        ChemicalResistanceCheck.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                checkPropertyChange(evt);
             }
         });
 
         jLabel6.setText("Quantity :");
 
         QuantityCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
+        QuantityCombo.setName("QuantityCombo"); // NOI18N
+        QuantityCombo.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                popupWillBecomeInvisible(evt);
+            }
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
 
         ReinforcementCheck.setText("Outer Reinforcement");
+        ReinforcementCheck.setName("ReinforcementCheck"); // NOI18N
+        ReinforcementCheck.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                checkPropertyChange(evt);
+            }
+        });
 
         jTextPane1.setEditable(false);
         jScrollPane4.setViewportView(jTextPane1);
@@ -201,14 +272,14 @@ public class PipeGUI extends javax.swing.JFrame {
                         .addComponent(jLabel6)
                         .addGap(18, 18, 18)
                         .addComponent(QuantityCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(ReinforcementCheck)
                             .addComponent(InsulationCheck)
                             .addComponent(ChemicalResistanceCheck))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(24, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -323,6 +394,11 @@ public class PipeGUI extends javax.swing.JFrame {
             }
         });
 
+        OrderList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                listSelectionChanged(evt);
+            }
+        });
         jScrollPane2.setViewportView(OrderList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -368,7 +444,7 @@ public class PipeGUI extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(78, 78, 78)
                         .addComponent(CloseButton)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -414,28 +490,13 @@ public class PipeGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void LengthTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LengthTextActionPerformed
-        
-    }//GEN-LAST:event_LengthTextActionPerformed
-
-    private void PlasticGradeComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlasticGradeComboActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_PlasticGradeComboActionPerformed
-
-    private void InsulationCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InsulationCheckActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_InsulationCheckActionPerformed
-
-    private void ChemicalResistanceCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChemicalResistanceCheckActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ChemicalResistanceCheckActionPerformed
-
     private void NewOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewOrderButtonActionPerformed
-        //LengthText.setText("");
-        //DiameterText.setText("");
         session.setCurrentOrder(session.createOrder());
+        
         updateForm();
         updateList();
+        
+        OrderList.setSelectedIndex(model.getSize() - 1);
     }//GEN-LAST:event_NewOrderButtonActionPerformed
 
     private void DeleteOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteOrderButtonActionPerformed
@@ -446,6 +507,57 @@ public class PipeGUI extends javax.swing.JFrame {
         //Send an event to the window telling it to close.
         dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }//GEN-LAST:event_CloseButtonActionPerformed
+
+    private void textKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textKeyReleased
+        JTextField f = (JTextField)evt.getComponent();
+        String current = f.getText();
+        
+        if(current.equals("")) return;
+        if(session.getNumberOfOrders() <= 0) return;
+        
+        double val = Double.parseDouble(current);
+        
+        if(f.getName().equals("LengthText")){
+            session.getCurrentOrder().getRequirements().setLength(val);
+        }else if(f.getName().equals("DiameterText")){
+            session.getCurrentOrder().getRequirements().setOuterDiameter(val);
+        }
+    }//GEN-LAST:event_textKeyReleased
+
+    private void listSelectionChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listSelectionChanged
+        //System.out.println(OrderList.getSelectedIndex());
+        
+        session.setCurrentOrder(OrderList.getSelectedIndex());
+        
+        updateForm();
+    }//GEN-LAST:event_listSelectionChanged
+
+    private void checkPropertyChange(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_checkPropertyChange
+        JCheckBox c = (JCheckBox)evt.getComponent();
+        
+        boolean value = c.isSelected();
+        
+        if(c.getName().equals("InsulationCheck")){
+            session.getCurrentOrder().getRequirements().setInnerInsulation(value);
+        }else if(c.getName().equals("ReinforcementCheck")){
+            session.getCurrentOrder().getRequirements().setOuterReinforcement(value);
+        }else if(c.getName().equals("ChemicalCheck")){
+            session.getCurrentOrder().getRequirements().setChemicalResistance(value);
+        }
+    }//GEN-LAST:event_checkPropertyChange
+
+    private void popupWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_popupWillBecomeInvisible
+        JComboBox combo = (JComboBox)evt.getSource();
+        
+        int index = combo.getSelectedIndex();
+        if(combo.getName().equals("GradeCombo")){
+            session.getCurrentOrder().getRequirements().setPlasticGrade(index + 1);
+        }else if(combo.getName().equals("ColourCombo")){
+            session.getCurrentOrder().getRequirements().setColourPrint(index);
+        }else if(combo.getName().equals("QuantityCombo")){
+            session.getCurrentOrder().setQuantity(index + 1);
+        }
+    }//GEN-LAST:event_popupWillBecomeInvisible
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox ChemicalResistanceCheck;

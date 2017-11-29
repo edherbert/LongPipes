@@ -8,8 +8,8 @@ public class RequirementsInfo {
     double length = 0.0d;
     double outerDiameter = 0.0d;
     
-    byte plasticGrade = 1;
-    byte colourPrint = 0;
+    int plasticGrade = 1;
+    int colourPrint = 0;
     
     boolean innerInsulation = false;
     boolean outerReinforcement = false;
@@ -33,7 +33,7 @@ public class RequirementsInfo {
      * @param chemicalResistance Whether or not the pipe needs chemical resistance.
      */
 
-    public RequirementsInfo(double length, double outerDiameter, byte plasticGrade, byte colourPrint, boolean innerInsulation, boolean outerReinforcement, boolean chemicalResistance){
+    public RequirementsInfo(double length, double outerDiameter, int plasticGrade, int colourPrint, boolean innerInsulation, boolean outerReinforcement, boolean chemicalResistance){
         this.length = length;
         this.outerDiameter = outerDiameter;
         this.plasticGrade = plasticGrade;
@@ -79,11 +79,11 @@ public class RequirementsInfo {
         return outerDiameter;
     }
     
-    public byte getPlasticGrade(){
+    public int getPlasticGrade(){
         return plasticGrade;
     }
     
-    public byte getColourPrint(){
+    public int getColourPrint(){
         return colourPrint;
     }
     
@@ -111,13 +111,13 @@ public class RequirementsInfo {
         this.outerDiameter = outerDiameter;
     }
     
-    public void setPlasticGrade(byte plasticGrade){
+    public void setPlasticGrade(int plasticGrade){
         if(plasticGrade < 1) plasticGrade = 1;
         if(plasticGrade > 5) plasticGrade = 5;
         this.plasticGrade = plasticGrade;
     }
     
-    public void setColourPrint(byte colourPrint){
+    public void setColourPrint(int colourPrint){
         if(colourPrint < 0) colourPrint = 0;
         if(colourPrint > 2) colourPrint = 2;
         this.colourPrint = colourPrint;
