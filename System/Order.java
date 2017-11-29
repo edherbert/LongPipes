@@ -2,6 +2,10 @@ package System;
 
 import pipes.Pipe;
 import pipes.Pipe1;
+import pipes.Pipe2;
+import pipes.Pipe3;
+import pipes.Pipe4;
+import pipes.Pipe5;
 import pipes.RequirementsInfo;
 
 /**
@@ -15,8 +19,12 @@ public class Order {
     //These are just copies at the moment
 
     private static final Pipe1 pipe1 = new Pipe1();
+    private static final Pipe2 pipe2 = new Pipe2();
+    private static final Pipe3 pipe3 = new Pipe3();
+    private static final Pipe4 pipe4 = new Pipe4();
+    private static final Pipe5 pipe5 = new Pipe5();
     //An array of these pipes for easy searching.
-    static Pipe[] pipeTypes = {pipe1};
+    static Pipe[] pipeTypes = {pipe1, pipe2, pipe3, pipe4, pipe5};
     
     private double cost = 0d;
     
