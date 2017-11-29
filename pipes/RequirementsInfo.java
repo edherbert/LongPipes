@@ -112,7 +112,7 @@ public class RequirementsInfo {
     }
     
     public void setPlasticGrade(byte plasticGrade){
-        if(plasticGrade < 0) plasticGrade = 0;
+        if(plasticGrade < 1) plasticGrade = 1;
         if(plasticGrade > 5) plasticGrade = 5;
         this.plasticGrade = plasticGrade;
     }

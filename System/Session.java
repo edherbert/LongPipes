@@ -9,12 +9,16 @@ import java.util.ArrayList;
 public class Session {
     
     private ArrayList<Order> orders = new ArrayList();
+    //used to reference which order the user interface is currently editing.
+    private int currentOrder = 0;
     
     /**
      * Construct an ordering session.
      */
     public Session(){
-        
+        PipeGUI gui = new PipeGUI(this);
+        gui.setVisible(true);
+        gui.setLocationRelativeTo(null);
     }
     
     /**
@@ -44,5 +48,30 @@ public class Session {
         }
         
         return total;
+    }
+    
+    public int getNumberOfOrders(){
+        return orders.size();
+    }
+    
+    public Order getCurrentOrder(){
+        //If the current order does not fit the size of the array then return null.
+        if(currentOrder < 0 || currentOrder >= orders.size()){
+            return null;
+        }else return orders.get(currentOrder);
+    }
+    
+    public void setCurrentOrder(int order){
+        if(order < 0) order = 0;
+        //Maybe do a check to see if the passed value is higher than what's in the list.
+        currentOrder = order;
+    }
+    
+    public void setCurrentOrder(Order order){
+        for(int i = 0; i < orders.size(); i++){
+            if(orders.get(i) == order){
+                currentOrder = i;
+            }
+        }
     }
 }

@@ -125,4 +125,8 @@ public class Order {
     public double getCost(){
         return cost;
     }
+    
+    public RequirementsInfo getRequirements(){
+        return requirements;
+    }
 }
