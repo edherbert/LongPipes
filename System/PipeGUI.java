@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
@@ -43,8 +44,8 @@ public class PipeGUI extends javax.swing.JFrame {
     public void updateForm(){
         Order current = session.getCurrentOrder();
         
-        //If there are more than 0 orders then enable the form.
-        setFormEnabled(session.getNumberOfOrders() > 0);
+        //If there are more than 0 orders and there is a selected order then enable the form.
+        setFormEnabled(session.getNumberOfOrders() > 0 && current != null);
         
         if(current == null) return;
         
@@ -60,6 +61,8 @@ public class PipeGUI extends javax.swing.JFrame {
         ColourCombo.setSelectedIndex((int)current.getRequirements().getColourPrint());
         
         QuantityCombo.setSelectedIndex(current.getQuantity() - 1);
+        
+        updateTotal();
     }
     
     public void updateList(){
@@ -68,6 +71,16 @@ public class PipeGUI extends javax.swing.JFrame {
         for(int i = 0; i < session.getNumberOfOrders(); i++){
             model.addElement("Order " + (i + 1));
         }
+        
+        OrderList.setSelectedIndex(session.getSelectionIndex());
+    }
+    
+    public void updateTotal(){
+        Order current = session.getCurrentOrder();
+        
+        TotalSingleBox.setText(current.getBaseCost() + "");
+        TotalBox.setText(current.getTotalCost() + "");
+        SessionTotal.setText(session.getSessionTotal() + "");
     }
     
     public void setFormEnabled(boolean enabled){
@@ -111,18 +124,18 @@ public class PipeGUI extends javax.swing.JFrame {
         ReinforcementCheck = new javax.swing.JCheckBox();
         jLabel8 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        TotalBox = new javax.swing.JTextPane();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTextPane2 = new javax.swing.JTextPane();
+        TotalSingleBox = new javax.swing.JTextPane();
         jSeparator5 = new javax.swing.JSeparator();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jScrollPane1 = new javax.swing.JScrollPane();
         FeedbackBox = new javax.swing.JTextPane();
         jScrollPane3 = new javax.swing.JScrollPane();
-        TotalText = new javax.swing.JTextPane();
+        SessionTotal = new javax.swing.JTextPane();
         jLabel7 = new javax.swing.JLabel();
         NewOrderButton = new javax.swing.JButton();
         DeleteOrderButton = new javax.swing.JButton();
@@ -226,15 +239,16 @@ public class PipeGUI extends javax.swing.JFrame {
             }
         });
 
-        jTextPane1.setEditable(false);
-        jScrollPane4.setViewportView(jTextPane1);
+        TotalBox.setEditable(false);
+        jScrollPane4.setViewportView(TotalBox);
 
         jLabel9.setText("Total (single):");
 
         jLabel10.setText("Overall total:");
 
-        jTextPane2.setEditable(false);
-        jScrollPane5.setViewportView(jTextPane2);
+        TotalSingleBox.setEditable(false);
+        TotalSingleBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane5.setViewportView(TotalSingleBox);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -368,8 +382,8 @@ public class PipeGUI extends javax.swing.JFrame {
         FeedbackBox.setEditable(false);
         jScrollPane1.setViewportView(FeedbackBox);
 
-        TotalText.setEditable(false);
-        jScrollPane3.setViewportView(TotalText);
+        SessionTotal.setEditable(false);
+        jScrollPane3.setViewportView(SessionTotal);
 
         jLabel7.setText("Total:");
 
@@ -500,12 +514,15 @@ public class PipeGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_NewOrderButtonActionPerformed
 
     private void DeleteOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteOrderButtonActionPerformed
-        // TODO add your handling code here:
+        session.deleteOrderByIndex(OrderList.getSelectedIndex());
+        
+        updateList();
+        updateForm();
     }//GEN-LAST:event_DeleteOrderButtonActionPerformed
 
     private void CloseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseButtonActionPerformed
-        //Send an event to the window telling it to close.
-        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+            //Send an event to the window telling it to close.
+            dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));   
     }//GEN-LAST:event_CloseButtonActionPerformed
 
     private void textKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textKeyReleased
@@ -522,6 +539,9 @@ public class PipeGUI extends javax.swing.JFrame {
         }else if(f.getName().equals("DiameterText")){
             session.getCurrentOrder().getRequirements().setOuterDiameter(val);
         }
+        
+        session.getCurrentOrder().updateOrder();
+        updateTotal();
     }//GEN-LAST:event_textKeyReleased
 
     private void listSelectionChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listSelectionChanged
@@ -544,6 +564,9 @@ public class PipeGUI extends javax.swing.JFrame {
         }else if(c.getName().equals("ChemicalCheck")){
             session.getCurrentOrder().getRequirements().setChemicalResistance(value);
         }
+        
+        session.getCurrentOrder().updateOrder();
+        updateTotal();
     }//GEN-LAST:event_checkPropertyChange
 
     private void popupWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_popupWillBecomeInvisible
@@ -557,6 +580,9 @@ public class PipeGUI extends javax.swing.JFrame {
         }else if(combo.getName().equals("QuantityCombo")){
             session.getCurrentOrder().setQuantity(index + 1);
         }
+        
+        session.getCurrentOrder().updateOrder();
+        updateTotal();
     }//GEN-LAST:event_popupWillBecomeInvisible
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -573,7 +599,9 @@ public class PipeGUI extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> PlasticGradeCombo;
     private javax.swing.JComboBox<String> QuantityCombo;
     private javax.swing.JCheckBox ReinforcementCheck;
-    private javax.swing.JTextPane TotalText;
+    private javax.swing.JTextPane SessionTotal;
+    private javax.swing.JTextPane TotalBox;
+    private javax.swing.JTextPane TotalSingleBox;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -597,7 +625,5 @@ public class PipeGUI extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
-    private javax.swing.JTextPane jTextPane1;
-    private javax.swing.JTextPane jTextPane2;
     // End of variables declaration//GEN-END:variables
 }

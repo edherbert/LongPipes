@@ -47,6 +47,10 @@ public class Order {
     public final void setRequirementsEqualTo(RequirementsInfo requirements){
         this.requirements = new RequirementsInfo(requirements);
         
+        updateOrder();
+    }
+    
+    public void updateOrder(){
         Pipe p = null;
         for(int i = 0; i < pipeTypes.length; i++){
             //Use the first pipe found that fits the requirements.
@@ -132,8 +136,12 @@ public class Order {
      * Get the cost of the order
      * @return The cost of the order.
      */
-    public double getCost(){
+    public double getBaseCost(){
         return cost;
+    }
+    
+    public double getTotalCost(){
+        return cost * quantity;
     }
     
     public RequirementsInfo getRequirements(){

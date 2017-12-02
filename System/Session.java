@@ -10,7 +10,8 @@ public class Session {
     
     private ArrayList<Order> orders = new ArrayList();
     //used to reference which order the user interface is currently editing.
-    private int currentOrder = 0;
+    //-1 means no selection
+    private int currentOrder = -1;
     
     /**
      * Construct an ordering session.
@@ -44,7 +45,7 @@ public class Session {
     public double getSessionTotal(){
         double total = 0d;
         for(Order o : orders){
-            total += o.getCost();
+            total += o.getBaseCost();
         }
         
         return total;
@@ -62,7 +63,10 @@ public class Session {
     }
     
     public void setCurrentOrder(int order){
-        if(order < 0) order = 0;
+        if(order < 0){
+            order = -1;
+            return;
+        }
         //Maybe do a check to see if the passed value is higher than what's in the list.
         currentOrder = order;
     }
@@ -71,7 +75,19 @@ public class Session {
         for(int i = 0; i < orders.size(); i++){
             if(orders.get(i) == order){
                 currentOrder = i;
+                break;
             }
         }
+    }
+    
+    public int getSelectionIndex(){
+        return currentOrder;
+    }
+    
+    public void deleteOrderByIndex(int index){
+        orders.remove(index);
+        //Try to set the current order to the one before the one being deleted.
+        //If there are no more orders then set it to nothing.
+        if(index == currentOrder) setCurrentOrder(index - 1);
     }
 }
