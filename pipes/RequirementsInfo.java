@@ -5,8 +5,8 @@ package pipes;
  * @author edward
  */
 public class RequirementsInfo {
-    double length = 0.0d;
-    double outerDiameter = 0.0d;
+    double length = 1.0d;
+    double outerDiameter = 1.0d;
     
     int plasticGrade = 1;
     int colourPrint = 0;

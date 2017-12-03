@@ -63,24 +63,48 @@ public class PipeGUI extends javax.swing.JFrame {
         QuantityCombo.setSelectedIndex(current.getQuantity() - 1);
         
         updateTotal();
+        updateFeedback();
     }
     
     public void updateList(){
         model.clear();
         
+        //This way of doing it might need to be changed at a later date.
         for(int i = 0; i < session.getNumberOfOrders(); i++){
             model.addElement("Order " + (i + 1));
         }
         
-        OrderList.setSelectedIndex(session.getSelectionIndex());
+        //If there are orders then select the current one.
+        if(session.getNumberOfOrders() > 0){
+            OrderList.setSelectedIndex(session.getSelectionIndex());
+        }
+    }
+    
+    public void updateFeedback(){
+        Order current = session.getCurrentOrder();
+        //If there is no current order then blank out the box and return;
+        if(current == null) {
+            FeedbackBox.setText("");
+            return;
+        }
+        String feedback = "";
+        
+        if(!current.isPossible()){
+            feedback = "That pipe is impossible!\n";
+            feedback += current.getFeedback();
+        }else{
+            feedback = "That pipe is possible!";
+        }
+        
+        FeedbackBox.setText(feedback);
     }
     
     public void updateTotal(){
         Order current = session.getCurrentOrder();
         
-        TotalSingleBox.setText(current.getBaseCost() + "");
-        TotalBox.setText(current.getTotalCost() + "");
-        SessionTotal.setText(session.getSessionTotal() + "");
+        TotalSingleBox.setText("£" + current.getBaseCost());
+        TotalBox.setText("£" + current.getTotalCost());
+        SessionTotal.setText("£" + session.getSessionTotal());
     }
     
     public void setFormEnabled(boolean enabled){
@@ -505,70 +529,22 @@ public class PipeGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void NewOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewOrderButtonActionPerformed
-        //Check grade 1 Requirements
-        if(PlasticGradeCombo.getSelectedItem().toString().equals("1") && ColourCombo.getSelectedIndex() == 1 && InsulationCheck.isSelected() == false && ReinforcementCheck.isSelected() == false) 
-            //FeedbackBox.setText("Pipe of plastic grade 1 with 1 colour is an invalid order");
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 1 with 1 colour is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("1") && ColourCombo.getSelectedIndex() == 2 && InsulationCheck.isSelected() == false && ReinforcementCheck.isSelected() == false) 
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 1 with 2 colours is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("1") && ColourCombo.getSelectedIndex() == 0 && InsulationCheck.isSelected() == true && ReinforcementCheck.isSelected() == false)
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 1 with no colour and inner insulation is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("1") && ColourCombo.getSelectedIndex() == 0 && ReinforcementCheck.isSelected() == true && InsulationCheck.isSelected() == false)
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 1 with no colour and outer reinforcement is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("1") && ColourCombo.getSelectedIndex() == 1 && InsulationCheck.isSelected() == true && ReinforcementCheck.isSelected() == false) 
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 1 with 1 colour and inner insulation is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("1") && ColourCombo.getSelectedIndex() == 2 && InsulationCheck.isSelected() == true && ReinforcementCheck.isSelected() == false) 
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 1 with 2 colours and inner insulation is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("1") && ColourCombo.getSelectedIndex() == 1 && ReinforcementCheck.isSelected() == true && InsulationCheck.isSelected() == false) 
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 1 with 1 colour and outer reinforcement is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("1") && ColourCombo.getSelectedIndex() == 2 && ReinforcementCheck.isSelected() == true && InsulationCheck.isSelected() == false) 
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 1 with 2 colours and outer reinforcement is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("1") && ColourCombo.getSelectedIndex() == 0 && InsulationCheck.isSelected() == true && ReinforcementCheck.isSelected() == true)
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 1 with no colour, inner insulation and outer reinforcement is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("1") && ColourCombo.getSelectedIndex() == 1 && InsulationCheck.isSelected() == true && ReinforcementCheck.isSelected() == true) 
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 1 with 1 colour and inner insulation and outer reinforcement is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("1") && ColourCombo.getSelectedIndex() == 2 && InsulationCheck.isSelected() == true && ReinforcementCheck.isSelected() == true) 
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 1 with 2 colours and inner insulation and outer reinforcement is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
+        session.setCurrentOrder(session.createOrder());
 
-       // Check grade 2 requirements 
-        
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("2") && ColourCombo.getSelectedIndex() == 0 && ReinforcementCheck.isSelected() == false)
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 2 with no colour is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("2") && ColourCombo.getSelectedIndex() == 1 && ReinforcementCheck.isSelected() == true)
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 2 with 1 colour and outer reinforcement is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("2") && ColourCombo.getSelectedIndex() == 2 && ReinforcementCheck.isSelected() == true)
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 2 with 2 colours and outer reinforcement is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("2") && ColourCombo.getSelectedIndex() == 0 && ReinforcementCheck.isSelected() == true)
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 2 with no colour and outer reinforcement is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-       
-       // Check grade 3 requirements
-        
-       // Check grade 4 requirements
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("4") && ColourCombo.getSelectedIndex() == 0)
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 4 with no colour is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-      
-        //Check grade 5 requirements 
-        else if(PlasticGradeCombo.getSelectedItem().toString().equals("5") && ColourCombo.getSelectedIndex() == 0)
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 5 with no colour is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        if(PlasticGradeCombo.getSelectedItem().toString().equals("5") && ColourCombo.getSelectedIndex() == 1)
-            JOptionPane.showMessageDialog(null, "Pipe of plastic grade 5 with 1 colour is an invalid order", "ERROR", JOptionPane.ERROR_MESSAGE);
-        
-        
-        else{
-            session.setCurrentOrder(session.createOrder());
-        
-            updateForm();
-            updateList();
+        updateForm();
+        updateList();
+        updateTotal();
 
-            OrderList.setSelectedIndex(model.getSize() - 1);
-        }
+        OrderList.setSelectedIndex(model.getSize() - 1);
     }//GEN-LAST:event_NewOrderButtonActionPerformed
 
     private void DeleteOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteOrderButtonActionPerformed
+        if(session.getNumberOfOrders() <= 0) return;
         session.deleteOrderByIndex(OrderList.getSelectedIndex());
         
         updateList();
         updateForm();
+        updateFeedback();
     }//GEN-LAST:event_DeleteOrderButtonActionPerformed
 
     private void CloseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseButtonActionPerformed
@@ -592,9 +568,11 @@ public class PipeGUI extends javax.swing.JFrame {
             }
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Input must be a number", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }    
+        }
+        
         session.getCurrentOrder().updateOrder();
         updateTotal();
+        updateFeedback();
     }//GEN-LAST:event_textKeyReleased
 
     private void listSelectionChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listSelectionChanged
@@ -603,6 +581,7 @@ public class PipeGUI extends javax.swing.JFrame {
         session.setCurrentOrder(OrderList.getSelectedIndex());
         
         updateForm();
+        updateFeedback();
     }//GEN-LAST:event_listSelectionChanged
 
     private void checkPropertyChange(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_checkPropertyChange
@@ -620,6 +599,7 @@ public class PipeGUI extends javax.swing.JFrame {
         
         session.getCurrentOrder().updateOrder();
         updateTotal();
+        updateFeedback();
     }//GEN-LAST:event_checkPropertyChange
 
     private void popupWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_popupWillBecomeInvisible
@@ -636,6 +616,7 @@ public class PipeGUI extends javax.swing.JFrame {
         
         session.getCurrentOrder().updateOrder();
         updateTotal();
+        updateFeedback();
     }//GEN-LAST:event_popupWillBecomeInvisible
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

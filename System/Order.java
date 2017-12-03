@@ -29,6 +29,9 @@ public class Order {
     private double cost = 0d;
     
     private int quantity = 1;
+    private boolean possible = true;
+    
+    String feedbackReasons = "";
     
     //Stores the cost of the plastic (£).
     private static final double plasticCost[] = {0.4, 0.6, 0.75, 0.8, 0.95};
@@ -37,7 +40,7 @@ public class Order {
      * Construct an instance of Order. This should not be called by itself. Use session.createOrder() to return an instance of Order.
      */
     public Order(){
-        
+        updateOrder();
     }
     
     /**
@@ -51,6 +54,15 @@ public class Order {
     }
     
     public void updateOrder(){
+        feedbackReasons = "";
+        
+        if(requirements.getLength() <= 0 || requirements.getOuterDiameter() <= 0){
+            feedbackReasons += "Pipes must have a length and outer diameter of more than 0.";
+            possible = false;
+            cost = 0d;
+            return;
+        }
+        
         Pipe p = null;
         for(int i = 0; i < pipeTypes.length; i++){
             //Use the first pipe found that fits the requirements.
@@ -59,15 +71,40 @@ public class Order {
                 break;
             }
         }
-        
-        //If no pipe is found then check that here.
+        //If a pipe is found then do this.
         if(p != null){
-            System.out.println("A suitable pipe has been found.");
+            possible = true;
             
             calculateCost(p, requirements);
-        }else{
-            System.out.println("A suitable pipe can't be found.");
-            cost = 0d;
+            return;
+        }
+        
+        //If no pipe is found then check why.
+        possible = false;
+        cost = 0d;
+        
+        int plasticGrade = requirements.getPlasticGrade();
+        if(requirements.getInnerInsulation()){
+            if(requirements.getOuterReinforcement()){
+                if(plasticGrade < 3 || plasticGrade > 5) feedbackReasons += "Inner insulation and outer reinforcement require a plastic grade of 3-5.\n";   
+            }else{
+                if(plasticGrade < 2 || plasticGrade > 5) feedbackReasons += "Inner insulation requires a plastic grade of 2-5.\n";
+            }
+            if(requirements.getColourPrint() < 2) feedbackReasons += "Inner insulation requires 2 colours.\n";
+        }
+        if(!requirements.getInnerInsulation() && !requirements.getOuterReinforcement()){
+            if(requirements.getColourPrint() == 2){
+                if(plasticGrade < 2 || plasticGrade > 5) feedbackReasons += "A plastic grade of 2-5 is required for 2 colours.\n";
+            }
+            if(requirements.getColourPrint() == 1){
+                if(plasticGrade < 2 || plasticGrade > 4) feedbackReasons += "A plastic grade of 2-4 is required for 1 colour.\n";
+            }
+            if(requirements.getColourPrint() == 0){
+                if(plasticGrade < 1 || plasticGrade > 3) feedbackReasons += "A plastic grade of 1-3 is required for no colours.\n";
+            }
+        }
+        if(requirements.getOuterReinforcement() && !requirements.getInnerInsulation()){
+            feedbackReasons += "Outer reinforcement must be paired with inner insulation.\n";
         }
     }
     
@@ -105,9 +142,9 @@ public class Order {
         baseCost = Math.floor(baseCost*100)/100;
         cost = Math.floor(cost*100)/100;
         
-        System.out.println("Base cost: " + baseCost);
+        /*System.out.println("Base cost: " + baseCost);
         System.out.println("Additional percentage: " + percentageToAdd);
-        System.out.println("Final Cost: " + cost);
+        System.out.println("Final Cost: " + cost);*/
     }
     
     /**
@@ -156,5 +193,13 @@ public class Order {
         if(quantity < 1) this.quantity = 1;
         else if(quantity > 10) this.quantity = 10;
         else this.quantity = quantity;
+    }
+    
+    public boolean isPossible(){
+        return possible;
+    }
+    
+    public String getFeedback(){
+        return feedbackReasons;
     }
 }

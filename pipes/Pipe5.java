@@ -17,9 +17,6 @@ public class Pipe5 extends Pipe{
         
         if(req.getColourPrint() == 0 || req.getColourPrint() == 1) fits = false;
         
-        if(req.getInnerInsulation()) fits = true;
-        if(req.getOuterReinforcement()) fits = true;
-        
         return fits;
     }
     
