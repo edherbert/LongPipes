@@ -70,7 +70,6 @@ public class PipeGUI extends javax.swing.JFrame {
     public void updateList(){
         model.clear();
         
-        //This way of doing it might need to be changed at a later date.
         for(int i = 0; i < session.getNumberOfOrders(); i++){
             String error = "";
             if(!session.getOrder(i).isPossible()) error = " - Error";
@@ -97,7 +96,6 @@ public class PipeGUI extends javax.swing.JFrame {
             feedback = "That pipe is impossible!\n";
             feedback += current.getFeedback();
             
-            //model.set(OrderList.getSelectedIndex(), "Order " + (session.getSelectionIndex() + 1) + " - Error");
             listItem += " - Error";
         }else{
             feedback = "That pipe is possible!";

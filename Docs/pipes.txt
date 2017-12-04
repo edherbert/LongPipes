@@ -1,8 +1,0 @@
-The idea here is that the pipes check their own requirements.
-
-There will be five different pipe classes and they will mostly just override the fitsRequirements method with their own checks.
-This also means that at some point we'll be able to add a function that returns the reason for the pipe not fitting the requirements.
-
-The pipes are then created statically in the Main class, thus allowing for them to be checked.
-I've also setup an array which just contains these static instances for easy searching.
-There are examples of this happening in the Main class.
