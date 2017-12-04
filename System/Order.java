@@ -71,6 +71,14 @@ public class Order {
             return;
         }
         
+        //Do not allow the user to proceed with a pipe length greater than 6 meters.
+        if(requirements.getLength() > 6){
+            feedbackReasons += "Pipes cannot have a length greater than 6 meters.";
+            possible = false;
+            cost = 0d;
+            return;
+        }
+        
         //Go through the pipes and take a reference to it if one is found.
         Pipe p = null;
         for(int i = 0; i < pipeTypes.length; i++){
