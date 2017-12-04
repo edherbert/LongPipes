@@ -5,6 +5,7 @@
  */
 package System;
 import java.awt.event.WindowEvent;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -20,7 +21,7 @@ import pipes.Pipe1;
 import pipes.RequirementsInfo;
 
 /**
- *
+ * The main gui class. This handles the gui and it's callbacks.
  * @author UP800456
  */
 public class PipeGUI extends javax.swing.JFrame {
@@ -71,7 +72,9 @@ public class PipeGUI extends javax.swing.JFrame {
         
         //This way of doing it might need to be changed at a later date.
         for(int i = 0; i < session.getNumberOfOrders(); i++){
-            model.addElement("Order " + (i + 1));
+            String error = "";
+            if(!session.getOrder(i).isPossible()) error = " - Error";
+            model.addElement("Order " + (i + 1) + error);
         }
         
         //If there are orders then select the current one.
@@ -88,12 +91,20 @@ public class PipeGUI extends javax.swing.JFrame {
             return;
         }
         String feedback = "";
+        String listItem = "Order " + (session.getSelectionIndex() + 1);
         
         if(!current.isPossible()){
             feedback = "That pipe is impossible!\n";
             feedback += current.getFeedback();
+            
+            //model.set(OrderList.getSelectedIndex(), "Order " + (session.getSelectionIndex() + 1) + " - Error");
+            listItem += " - Error";
         }else{
             feedback = "That pipe is possible!";
+        }
+        
+        if(OrderList.getSelectedIndex() >= 0){
+            model.set(OrderList.getSelectedIndex(), listItem);
         }
         
         FeedbackBox.setText(feedback);
@@ -102,9 +113,22 @@ public class PipeGUI extends javax.swing.JFrame {
     public void updateTotal(){
         Order current = session.getCurrentOrder();
         
-        TotalSingleBox.setText("£" + current.getBaseCost());
-        TotalBox.setText("£" + current.getTotalCost());
-        SessionTotal.setText("£" + session.getSessionTotal());
+        double base = 0d;
+        double totalOrder = 0d;
+        double sessionTotal = 0d;
+        
+        if(current != null){
+            base = current.getBaseCost();
+            totalOrder = current.getTotalCost();
+            sessionTotal = session.getSessionTotal();
+        }
+        
+        DecimalFormat df = new DecimalFormat("######0.00");
+        
+        TotalSingleBox.setText("£" + df.format(base));
+        TotalBox.setText("£" + df.format(totalOrder));
+        SessionTotal.setText("£" + df.format(sessionTotal));    
+        
     }
     
     public void setFormEnabled(boolean enabled){
@@ -189,6 +213,9 @@ public class PipeGUI extends javax.swing.JFrame {
 
         LengthText.setName("LengthText"); // NOI18N
         LengthText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                textKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 textKeyReleased(evt);
             }
@@ -196,6 +223,9 @@ public class PipeGUI extends javax.swing.JFrame {
 
         DiameterText.setName("DiameterText"); // NOI18N
         DiameterText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                textKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 textKeyReleased(evt);
             }
@@ -545,6 +575,7 @@ public class PipeGUI extends javax.swing.JFrame {
         updateList();
         updateForm();
         updateFeedback();
+        updateTotal();
     }//GEN-LAST:event_DeleteOrderButtonActionPerformed
 
     private void CloseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseButtonActionPerformed
@@ -566,18 +597,16 @@ public class PipeGUI extends javax.swing.JFrame {
             }else if(f.getName().equals("DiameterText")){
                 session.getCurrentOrder().getRequirements().setOuterDiameter(val);
             }
+            
+            session.getCurrentOrder().updateOrder();
+            updateTotal();
+            updateFeedback();
         }catch(NumberFormatException e){
-            JOptionPane.showMessageDialog(null, "Input must be a number", "ERROR", JOptionPane.ERROR_MESSAGE);
+            System.err.println("Error converting that input to a double.");
         }
-        
-        session.getCurrentOrder().updateOrder();
-        updateTotal();
-        updateFeedback();
     }//GEN-LAST:event_textKeyReleased
 
     private void listSelectionChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listSelectionChanged
-        //System.out.println(OrderList.getSelectedIndex());
-        
         session.setCurrentOrder(OrderList.getSelectedIndex());
         
         updateForm();
@@ -618,6 +647,19 @@ public class PipeGUI extends javax.swing.JFrame {
         updateTotal();
         updateFeedback();
     }//GEN-LAST:event_popupWillBecomeInvisible
+
+    private void textKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textKeyPressed
+        //Determine if the value is an integer. If it is then allow it.
+        try{
+            int val = Integer.parseInt(evt.getKeyChar() + "");
+        }catch(NumberFormatException e){
+            //Allow the . character
+            if(evt.getKeyChar() != '.'){
+                //Otherwise cancel the event.
+                evt.consume();    
+            }
+        }
+    }//GEN-LAST:event_textKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox ChemicalResistanceCheck;

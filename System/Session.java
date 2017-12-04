@@ -15,6 +15,7 @@ public class Session {
     
     /**
      * Construct an ordering session.
+     * This will also create an instance of the pipe gui.
      */
     public Session(){
         PipeGUI gui = new PipeGUI(this);
@@ -42,19 +43,32 @@ public class Session {
         return orders.get(index);
     }
     
+    /**
+     * Get the total of all the orders in the session, including quantity.
+     * @return Get the session total including quantity.
+     */
     public double getSessionTotal(){
         double total = 0d;
         for(Order o : orders){
-            total += o.getBaseCost();
+            total += o.getBaseCost() * o.getQuantity();
         }
         
         return total;
     }
     
+    /**
+     * Get the number of orders in the session.
+     * @return Number of orders.
+     */
     public int getNumberOfOrders(){
         return orders.size();
     }
     
+    /**
+     * Get a reference to the current order. 
+     * This will return null if there is no current order.
+     * @return A reference to the current order.
+     */
     public Order getCurrentOrder(){
         //If the current order does not fit the size of the array then return null.
         if(currentOrder < 0 || currentOrder >= orders.size()){
@@ -62,15 +76,24 @@ public class Session {
         }else return orders.get(currentOrder);
     }
     
-    public void setCurrentOrder(int order){
-        if(order < 0){
-            order = -1;
+    /**
+     * Set the current order by index.
+     * @param orderIndex the order to set. 
+     */
+    public void setCurrentOrder(int orderIndex){
+        if(orderIndex < 0){
+            orderIndex = -1;
             return;
         }
-        //Maybe do a check to see if the passed value is higher than what's in the list.
-        currentOrder = order;
+        
+        currentOrder = orderIndex;
     }
     
+    /**
+     * Set the current order by reference.
+     * This function has efficiency O(n).
+     * @param order The order to set.
+     */
     public void setCurrentOrder(Order order){
         for(int i = 0; i < orders.size(); i++){
             if(orders.get(i) == order){
@@ -80,10 +103,19 @@ public class Session {
         }
     }
     
+    /**
+     * Return the selection index.as an int.
+     * @return selectionIndex
+     */
     public int getSelectionIndex(){
         return currentOrder;
     }
     
+    /**
+     * Delete an order by index.
+     * This function will attempt to set the previous order to the current one.
+     * @param index The index to delete.
+     */
     public void deleteOrderByIndex(int index){
         orders.remove(index);
         //Try to set the current order to the one before the one being deleted.

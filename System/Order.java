@@ -45,6 +45,7 @@ public class Order {
     
     /**
      * Set the current order requirements equal to the provided requirements.
+     * This will make a call to updateOrder().
      * @param requirements What requirements to set. They are set using a copy constructor.
      */
     public final void setRequirementsEqualTo(RequirementsInfo requirements){
@@ -53,9 +54,16 @@ public class Order {
         updateOrder();
     }
     
+    /**
+     * Update the order by checking whether the requirements make sense.
+     * This will determine whether the order is possible and should be called when the order's requirements change.
+     * If the order is impossible, this method will determine the reason why and set it as a string.
+     */
     public void updateOrder(){
+        //Reset the feedback variable.
         feedbackReasons = "";
         
+        //If the requirements specify a length or diameter of 0 then abort the entire check.
         if(requirements.getLength() <= 0 || requirements.getOuterDiameter() <= 0){
             feedbackReasons += "Pipes must have a length and outer diameter of more than 0.";
             possible = false;
@@ -63,6 +71,7 @@ public class Order {
             return;
         }
         
+        //Go through the pipes and take a reference to it if one is found.
         Pipe p = null;
         for(int i = 0; i < pipeTypes.length; i++){
             //Use the first pipe found that fits the requirements.
@@ -80,19 +89,27 @@ public class Order {
         }
         
         //If no pipe is found then check why.
+        //This bit won't run due to the return in the above if clase if the pipe is found.
         possible = false;
         cost = 0d;
         
         int plasticGrade = requirements.getPlasticGrade();
+        //First of all check for the inner insulation.
         if(requirements.getInnerInsulation()){
+            //Outer reinforcement can only be selected if it's with insulation, so this can be checked here.
             if(requirements.getOuterReinforcement()){
+                //Pipe 5
                 if(plasticGrade < 3 || plasticGrade > 5) feedbackReasons += "Inner insulation and outer reinforcement require a plastic grade of 3-5.\n";   
             }else{
+                //Pipe 4
                 if(plasticGrade < 2 || plasticGrade > 5) feedbackReasons += "Inner insulation requires a plastic grade of 2-5.\n";
             }
+            //Inner insulation always requires two colours.
             if(requirements.getColourPrint() < 2) feedbackReasons += "Inner insulation requires 2 colours.\n";
         }
+        //Then do the rest of the pipes
         if(!requirements.getInnerInsulation() && !requirements.getOuterReinforcement()){
+            //Check for each individual pipe type.
             if(requirements.getColourPrint() == 2){
                 if(plasticGrade < 2 || plasticGrade > 5) feedbackReasons += "A plastic grade of 2-5 is required for 2 colours.\n";
             }
@@ -104,6 +121,7 @@ public class Order {
             }
         }
         if(requirements.getOuterReinforcement() && !requirements.getInnerInsulation()){
+            //This is a fringe case, as outer reinforcement must always be paired with inner insulation.
             feedbackReasons += "Outer reinforcement must be paired with inner insulation.\n";
         }
     }
@@ -120,10 +138,8 @@ public class Order {
         //Get the cost of the plastic. -1 to index the array correctly.
         baseCost = plasticCost[requirements.getPlasticGrade() - 1] * calculateArea(requirements);
         
-        //Calculate the additional costs.        
-        //BY THE WAY:
-        //I'm not sure if this is the correct way to do it, but I've done it so the cost percentages add up.
-        //So I'll add all the required percentages and then find the ammount based on the cost.
+        //Calculate the additional costs.
+        //Add all the required percentages and then find the ammount based on the cost.
         double percentageToAdd = 0;
         
         if(requirements.getColourPrint() == 1){
@@ -136,15 +152,11 @@ public class Order {
         if(requirements.getOuterReinforcement()) percentageToAdd += 0.17;
         if(requirements.getChemicalResistance()) percentageToAdd += 0.14;
         
-        cost = baseCost + baseCost * percentageToAdd;
+        cost = baseCost + (baseCost * percentageToAdd);
         
-        //Round to 2dp
+        //Round both the base cost and final cost to 2dp
         baseCost = Math.floor(baseCost*100)/100;
         cost = Math.floor(cost*100)/100;
-        
-        /*System.out.println("Base cost: " + baseCost);
-        System.out.println("Additional percentage: " + percentageToAdd);
-        System.out.println("Final Cost: " + cost);*/
     }
     
     /**
@@ -170,35 +182,59 @@ public class Order {
     }
     
     /**
-     * Get the cost of the order
+     * Get the base cost of the order (Without the quantity).
      * @return The cost of the order.
      */
     public double getBaseCost(){
         return cost;
     }
     
+    /**
+     * Get the total cost of the order (With the quantity).
+     * @return The cost of the order with quantity.
+     */
     public double getTotalCost(){
         return cost * quantity;
     }
     
+    /**
+     * Get the requirements for this order.
+     * @return The requirements.
+     */
     public RequirementsInfo getRequirements(){
         return requirements;
     }
     
+    /**
+     * Get the quantity of the order.
+     * @return Quantity
+     */
     public int getQuantity(){
         return quantity;
     }
     
+    /**
+     * Set the quantity of the order. 0 or less or 10 or greater is not allowed.
+     * @param quantity 
+     */
     public void setQuantity(int quantity){
         if(quantity < 1) this.quantity = 1;
         else if(quantity > 10) this.quantity = 10;
         else this.quantity = quantity;
     }
     
+    /**
+     * Return whether the order is possible
+     * @return possible
+     */
     public boolean isPossible(){
         return possible;
     }
     
+    /**
+     * Get the feedback reasons as a string.
+     * @return the feedback reasons.
+     */
     public String getFeedback(){
         return feedbackReasons;
     }
