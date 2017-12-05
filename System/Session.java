@@ -16,8 +16,9 @@ public class Session {
     /**
      * Construct an ordering session.
      * This will also create an instance of the pipe gui.
+     * @throws java.lang.Exception
      */
-    public Session(){
+    public Session() throws Exception {
         PipeGUI gui = new PipeGUI(this);
         gui.setVisible(true);
         gui.setLocationRelativeTo(null);
